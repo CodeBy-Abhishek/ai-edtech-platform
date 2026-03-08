@@ -31,7 +31,6 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-google-recaptcha": "^2.1.9",
     "axios": "^1.13.2",
-    "babel-plugin-react-compiler": "1.0.0",
     "clsx": "^2.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
