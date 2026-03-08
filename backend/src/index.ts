@@ -23,6 +23,9 @@ dotenv.config();
 import http from 'http';
 import { Server } from 'socket.io';
 import { SocketService } from './socket/socketService';
+import { PrismaClient } from '@prisma/client';
+
+export const prisma = new PrismaClient();
 
 const app = express();
 const PORT = process.env.PORT || 5000;

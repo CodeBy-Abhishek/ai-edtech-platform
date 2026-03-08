@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { prisma } from '../index';
 import { createCheckoutSession } from '../services/stripeService';
+import { v4 as uuidv4 } from 'uuid';
 
 // This would typically come from an auth middleware
 interface AuthRequest extends Request {
@@ -13,7 +14,7 @@ interface AuthRequest extends Request {
 
 export const createOrder = async (req: AuthRequest, res: Response) => {
     try {
-        const { courseId } = req.body;
+        const { courseId, couponCode } = req.body;
         const userId = req.user?.userId;
         const userEmail = req.user?.email || 'customer@example.com';
 
@@ -22,6 +23,13 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
         }
 
         const course = await prisma.course.findUnique({ where: { id: courseId } });
+        if (!course) {
+             return res.status(404).json({ message: 'Course not found' });
+        }
+
+        let finalAmount = course.price;
+        let appliedCouponId = null;
+
         if (couponCode) {
             const coupon = await prisma.coupon.findUnique({
                 where: { code: couponCode, isActive: true }
